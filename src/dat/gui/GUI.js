@@ -20,6 +20,7 @@ import FunctionController from '../controllers/FunctionController';
 import NumberControllerBox from '../controllers/NumberControllerBox';
 import NumberControllerSlider from '../controllers/NumberControllerSlider';
 import ColorController from '../controllers/ColorController';
+import FileController from '../controllers/FileController';
 import requestAnimationFrame from '../utils/requestAnimationFrame';
 import CenteredDiv from '../dom/CenteredDiv';
 import dom from '../dom/dom';
@@ -552,6 +553,18 @@ common.extend(
         property,
         {
           color: true
+        }
+      );
+    },
+
+    addFile: function(object, property, args) {
+      return add(
+        this,
+        object,
+        property,
+        {
+          args,
+          file: true
         }
       );
     },
@@ -1140,6 +1153,8 @@ function add(gui, object, property, params) {
 
   if (params.color) {
     controller = new ColorController(object, property);
+  } else if (params.file) {
+    controller = new FileController(object, property, params.args);
   } else {
     const factoryArgs = [object, property].concat(params.factoryArgs);
     controller = ControllerFactory.apply(gui, factoryArgs);

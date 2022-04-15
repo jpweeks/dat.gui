@@ -6,6 +6,7 @@
 <body>
   <script type="text/javascript" src="build/dat.gui.js"></script>
   <script type="text/javascript">
+/* eslint-disable */
     var obj = {
         message: 'Hello World',
         displayOutline: false,
@@ -22,6 +23,8 @@
         explode: function () {
           alert('Bang!');
         },
+
+        images: null,
 
         color0: "#ffae23", // CSS string
         color1: [ 0, 128, 255 ], // RGB array
@@ -45,6 +48,11 @@
 
     // Choose from named values
     gui.add(obj, 'speed', { Stopped: 0, Slow: 0.1, Fast: 5 } );
+
+    gui.addFile(obj, 'images', { accept: 'image/*', multiple: true } )
+      .onChange((files) => {
+        console.log('Image files', files)
+      })
 
     var f1 = gui.addFolder('Colors');
     f1.addColor(obj, 'color0');
