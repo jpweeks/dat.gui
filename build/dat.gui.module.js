@@ -1584,6 +1584,40 @@ var ControllerFactory = function ControllerFactory(object, property) {
   return null;
 };
 
+var FileController = function (_Controller) {
+  inherits(FileController, _Controller);
+  function FileController(object, property, args) {
+    classCallCheck(this, FileController);
+    var _this2 = possibleConstructorReturn(this, (FileController.__proto__ || Object.getPrototypeOf(FileController)).call(this, object, property));
+    var _this = _this2;
+    var input = _this2.__input = document.createElement('input');
+    input.type = 'file';
+    if (args.accept) {
+      input.accept = args.accept;
+    }
+    if (args.multiple) {
+      input.multiple = !!args.multiple;
+    }
+    dom.bind(input, 'change', function () {
+      var files = input.files;
+      _this.setValue(files);
+    });
+    _this2.domElement.appendChild(_this2.__input);
+    return _this2;
+  }
+  createClass(FileController, [{
+    key: 'setValue',
+    value: function setValue(v) {
+      var toReturn = get(FileController.prototype.__proto__ || Object.getPrototypeOf(FileController.prototype), 'setValue', this).call(this, v);
+      if (this.__onFinishChange) {
+        this.__onFinishChange.call(this, this.getValue());
+      }
+      return toReturn;
+    }
+  }]);
+  return FileController;
+}(Controller);
+
 function requestAnimationFrame(callback) {
   setTimeout(callback, 1000 / 60);
 }
@@ -1945,6 +1979,12 @@ Common.extend(GUI.prototype,
       color: true
     });
   },
+  addFile: function addFile(object, property, args) {
+    return _add(this, object, property, {
+      args: args,
+      file: true
+    });
+  },
   remove: function remove(controller) {
     this.__ul.removeChild(controller.__li);
     this.__controllers.splice(this.__controllers.indexOf(controller), 1);
@@ -2300,6 +2340,8 @@ function _add(gui, object, property, params) {
   var controller = void 0;
   if (params.color) {
     controller = new ColorController(object, property);
+  } else if (params.file) {
+    controller = new FileController(object, property, params.args);
   } else {
     var factoryArgs = [object, property].concat(params.factoryArgs);
     controller = ControllerFactory.apply(gui, factoryArgs);
